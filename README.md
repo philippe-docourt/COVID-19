@@ -1,7 +1,16 @@
+# Fork of https://github.com/CSSEGISandData/COVID-19
+
+## About
+
+This fork introduces a RMarkdown script for generating graphs showing evolution of COVID-19 propagation in Switzerland and Western Europe.
+
+See original readme content below or at https://github.com/CSSEGISandData/COVID-19/blob/master/README.md for more details
+
+
 # 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE
 
-
-This is the data repository for the 2019 Novel Coronavirus Visual Dashboard operated by the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE). Also, Supported by ESRI Living Atlas Team and the Johns Hopkins University Applied Physics Lab (JHU APL).
+  
+  This is the data repository for the 2019 Novel Coronavirus Visual Dashboard operated by the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE). Also, Supported by ESRI Living Atlas Team and the Johns Hopkins University Applied Physics Lab (JHU APL).
 
 <br>
 
