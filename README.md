@@ -6,6 +6,12 @@ This fork introduces a RMarkdown script for generating graphs showing evolution 
 
 See original readme content below or at https://github.com/CSSEGISandData/COVID-19/blob/master/README.md for more details
 
+## Terms of USe
+
+* Data : Copyright 2020 Johns Hopkins University, all rights reserved. See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md.
+* Source code for generating graphs: Copyright Philippe Docourt. Licensed under MIT License. See https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
+* Graphics : Public Domain
+
 
 # 2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE
 

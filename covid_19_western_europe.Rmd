@@ -12,6 +12,8 @@ output:
   word_document: 
     toc: yes
   pdf_document: default
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y - %H:%M')`"
+author: "Philippe Docourt"
 ---
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -120,14 +122,14 @@ day.count <- NROW(switzerland.confirmed)
 
 ```{r, echo=FALSE}
 plot_time_sery_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA)
-plot_time_sery_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, NA, 49)
-plot_time_sery_for_country(france.confirmed, germany.deaths, france.recovered, "France", NA, 53, 56)
+plot_time_sery_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, 49)
+plot_time_sery_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56)
 plot_time_sery_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", NA, 48)
 plot_time_sery_for_country(austria.confirmed, austria.deaths, austria.recovered, "Austria", NA, 52)
-plot_time_sery_for_country(spain.confirmed, spain.deaths, spain.recovered, "Spain", NA, NA, 53)
-plot_time_sery_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA, NA)
-plot_time_sery_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, "Iceland", NA, NA, NA)
-plot_time_sery_for_country(hubei.confirmed, hubei.deaths, hubei.recovered, "Hubei Province, China", NA, NA, 2)
+plot_time_sery_for_country(spain.confirmed, spain.deaths, spain.recovered, "Spain", NA, 53)
+plot_time_sery_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA)
+plot_time_sery_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, "Iceland", NA, NA)
+plot_time_sery_for_country(hubei.confirmed, hubei.deaths, hubei.recovered, "Hubei Province, China", NA, 2)
 ```
 
 # Comparison of Number of Confirmed Cases
@@ -193,9 +195,11 @@ legend("topleft", legend = countryNames, col = col, lty = lty, pch = pch, title 
 
 All the graphs above are generated from the data provided by Johns Hopkins CSSE (provided to the public strictly for educational and academic research purposes).
 
+The source code for generating the graphs is available under MIT License at https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
+
 The data are provided as *2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE* (see https://github.com/CSSEGISandData/COVID-19).
 
-See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md for more details.
+See https://github.com/philippe-docourt/COVID-19/blob/master/README.md for more details.
 
 ## Data Sources
 
@@ -218,6 +222,6 @@ See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md for more de
 ## Terms of USe
 
 * Data : Copyright 2020 Johns Hopkins University, all rights reserved. See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md.
-* Source code for generating graphs: Copyright Philippe Docourt. Licensed under MIT License.
+* Source code for generating graphs: Copyright Philippe Docourt. Licensed under MIT License. See https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
 * Graphics : Public Domain
 
