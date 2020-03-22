@@ -66,7 +66,7 @@ plot_time_sery_for_country <- function(country.confirmed, country.deaths, countr
     text(x = confinement.at - 0.05, y = ypos, "Population\nis confined", col = "red", srt = 90)
   }
   
-  legend("topleft", legend = c("Confirmed", "Deaths", "Recovered", "Confirmed cases trend based on last day", "Confirmed cases trend based on last week"), col = c("red", "black", "green", "violet", "black"), lty = c(rep(1, 3), 2, 3), lw = c(rep(1, 3), 1.5, 1.5))
+  legend("topleft", legend = c("Confirmed", "Deaths", "Recovered", "Confirmed trend based on last day", "Confirmed trend based on last week"), col = c("red", "black", "green", "violet", "black"), lty = c(rep(1, 3), 2, 3), lw = c(rep(1, 3), 1.5, 1.5))
 }
 
 covid <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Confirmed.csv")
@@ -136,7 +136,7 @@ plot_time_sery_for_country(hubei.confirmed, hubei.deaths, hubei.recovered, "Hube
 
 ```{r, echo=FALSE}
 xrange <- c(35, day.count)
-yrange <- c(0, 50000)
+yrange <- c(0, 60000)
 
 countries.confirmed <- list(switzerland.confirmed, italy.confirmed, france.confirmed, germany.confirmed, austria.confirmed, spain.confirmed, uk.confirmed, iceland.confirmed)
 countries.deaths <- list(switzerland.deaths, italy.deaths, france.deaths, germany.deaths, austria.deaths, spain.deaths, uk.deaths, iceland.deaths)
@@ -154,7 +154,7 @@ legend("topleft", legend = countryNames, col = col, lty = lty, pch = pch, title 
 
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
-yrange <- c(0, 4500)
+yrange <- c(0, 5000)
 plot(xrange, yrange, main= "Deaths", type = "n", xlab = "Days Since 2020-01-20", ylab = "Number of Deaths")
 for (i in seq(1, country.count)) {
   lines(seq(1, day.count), countries.deaths[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
@@ -168,7 +168,7 @@ legend("topleft", legend = countryNames, col = col, lty = lty, pch = pch, title 
 
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
-yrange <- c(0, 5000)
+yrange <- c(0, 6500)
 plot(xrange, yrange, main= "Recovered Cases", type = "n", xlab = "Days Since 2020-01-20", ylab = "Number of Cases")
 for (i in seq(1, country.count)) {
   lines(seq(1, day.count), countries.recovered[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
