@@ -29,7 +29,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
     day.count <- nrow(country.confirmed)
   ylim <- c(0, 1.3 * max(country.confirmed, na.rm = TRUE))
   day.start <- min(c(35, public.spaces.closed.at, confinement.at), na.rm = TRUE)
-  plot(country.confirmed, main= paste("Cases in", country.name), type = "o", xlab = "Days Since 2020-01-21", ylab = "Number of Cases", col = "red", xlim =  c(day.start, day.count + 4), ylim = ylim)
+  plot(country.confirmed, main= paste("Cases in", country.name), type = "o", xlab = "Days Since January 21, 2020", ylab = "Number of Cases", col = "red", xlim =  c(day.start, day.count + 4), ylim = ylim)
   lines(seq(1, length(country.deaths)), country.deaths, type = "l", col = "black", lty = 1, lw = 1)
   lines(seq(1, length(country.recovered)), country.recovered, type = "l", col = "green", lty = 1, lw = 1)
   grid()
@@ -125,12 +125,15 @@ day.count <- NROW(switzerland.confirmed)
 
 # Evolution In Switzerland, Western Europe, and Hubei Province (China)
 
+The figures do not represent the same thing in each country, depending on the extent of the screening tests carried out. Regardless of this problem, the weekly and daily trend curves allow you to get an idea of the foreseeable evolution for the next days (assuming that the screening strategy does not change over time). Respectively, it provides an indication of a possible inflection of the progression of the epidemic in the near future.
+
+
 ```{r, echo=FALSE}
 plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA)
 plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, 49)
 plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56)
-plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", NA, 48)
-plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, "Austria", NA, 52)
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", 48, NA)
+plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, "Austria", 52, NA)
 plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, "Spain", NA, 53)
 plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA)
 plot_time_series_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, "Iceland", NA, NA)
@@ -163,7 +166,7 @@ for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, countries.deaths[[i]]), na.rm = TRUE)
 }
 yrange <- c(0, max.y)
-plot(xrange, yrange, main= "Deaths", type = "n", xlab = "Days Since 2020-01-20", ylab = "Number of Deaths")
+plot(xrange, yrange, main= "Deaths", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Deaths")
 for (i in seq(1, country.count)) {
   lines(seq(1, day.count), countries.deaths[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
 }
@@ -174,6 +177,8 @@ legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title
 
 # Comparison of Number of Recovered Cases
 
+WARNING: The figures do not seem to be updated since March 23, 2020.
+
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
 max.y <- 0
@@ -181,15 +186,18 @@ for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, countries.recovered[[i]]), na.rm = TRUE)
 }
 yrange <- c(0, max.y)
-plot(xrange, yrange, main= "Recovered Cases", type = "n", xlab = "Days Since 2020-01-20", ylab = "Number of Cases")
+plot(xrange, yrange, main= "Recovered Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
 for (i in seq(1, country.count)) {
-  lines(seq(1, day.count), countries.recovered[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  d <- nrow(countries.recovered[[i]])
+  lines(seq(1, d), countries.recovered[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
 }
 grid()
 legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
 ```
 
 # Comparison of Number of Active Cases
+
+WARNING: The figures do not seem to be updated since March 23, 2020.
 
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
@@ -199,10 +207,11 @@ for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, countries.confirmed[[i]], countries.recovered[[i]], countries.deaths[[i]]), na.rm = TRUE)
 }
 yrange <- c(0, max.y)
-plot(xrange, yrange, main= "Active Cases", type = "n", xlab = "Days Since 2020-01-20", ylab = "Number of Cases")
+plot(xrange, yrange, main= "Active Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
 for (i in seq(1, country.count)) {
-  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
-  lines(seq(1, day.count), y, type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  d <- nrow(countries.recovered[[i]])
+  y <- countries.confirmed[[i]][1:d] - (countries.recovered[[i]][1:d] + countries.deaths[[i]][1:d])
+  lines(seq(1, d), y, type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
 }
 grid()
 legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
