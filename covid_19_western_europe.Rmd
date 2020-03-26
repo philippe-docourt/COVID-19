@@ -71,7 +71,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
 
 covid <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
 covid.deaths <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
-covid.recovered <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_19-covid-Recovered.csv")
+covid.recovered <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
 
 country.names <- c("Switzerland", "Italy", "France", "Germany", "Austria" , "Spain", "Great Britain", "Iceland")
 country.count <- length(country.names)
@@ -89,7 +89,7 @@ italy.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Regi
 
 france.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "France" & Province.State == ""))
 france.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "France" & Province.State == ""))
-france.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "France" & Province.State == "France"))
+france.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "France" & Province.State == ""))
 
 germany.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Germany"))
 germany.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Germany"))
@@ -105,7 +105,7 @@ spain.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Regi
 
 uk.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "United Kingdom" & Province.State == ""))
 uk.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "United Kingdom" & Province.State == ""))
-uk.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "United Kingdom" & Province.State == "United Kingdom"))
+uk.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "United Kingdom" & Province.State == ""))
 
 iceland.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Iceland"))
 iceland.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Iceland"))
@@ -177,7 +177,7 @@ legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title
 
 # Comparison of Number of Recovered Cases
 
-WARNING: The figures do not seem to be updated since March 23, 2020.
+WARNING: The figures seem to be wrong on March 23, 2020.
 
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
@@ -197,7 +197,7 @@ legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title
 
 # Comparison of Number of Active Cases
 
-WARNING: The figures do not seem to be updated since March 23, 2020.
+WARNING: The figures seem to be wrong on March 23, 2020.
 
 ```{r, echo=FALSE}
 xrange <- c(40, day.count)
