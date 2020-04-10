@@ -1,14 +1,14 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_notebook: 
-    fig_height: 5
-    fig_width: 7
-    number_sections: yes
   html_document: 
     df_print: default
     number_sections: yes
     toc: yes
+  html_notebook: 
+    fig_height: 5
+    fig_width: 7
+    number_sections: yes
   word_document: 
     toc: yes
   pdf_document: default
