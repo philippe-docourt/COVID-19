@@ -1,13 +1,13 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    df_print: default
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
-    df_print: default
     number_sections: yes
     toc: yes
   word_document: 
@@ -90,11 +90,11 @@ covid <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covi
 covid.deaths <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
 covid.recovered <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
 
-country.names <- c("Switzerland", "Italy", "France", "Germany", "Austria" , "Spain", "Great Britain", "Iceland")
+country.names <- c("Switzerland", "Italy", "France", "Germany", "Austria" , "Spain", "Great Britain", "Denmark", "Norway", "Sweden", "Iceland")
 country.count <- length(country.names)
 col <- rainbow(country.count)
 lty <- seq(1, country.count)
-pch <- seq(18, 18 + country.count)
+pch <- seq(10, 10 + country.count)
 
 switzerland.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Switzerland"))
 switzerland.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Switzerland"))
@@ -124,6 +124,18 @@ uk.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "United
 uk.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "United Kingdom" & Province.State == ""))
 uk.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "United Kingdom" & Province.State == ""))
 
+denmark.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Denmark" & Province.State == ""))
+denmark.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Denmark" & Province.State == ""))
+denmark.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Denmark" & Province.State == ""))
+
+norway.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Iceland"))
+norway.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Iceland"))
+norway.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Iceland"))
+
+sweden.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Sweden"))
+sweden.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Sweden"))
+sweden.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Sweden"))
+
 iceland.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Iceland"))
 iceland.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Iceland"))
 iceland.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Iceland"))
@@ -132,9 +144,9 @@ hubei.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Chi
 hubei.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "China" & Province.State == "Hubei"))
 hubei.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "China" & Province.State == "Hubei"))
 
-countries.confirmed <- list(switzerland.confirmed, italy.confirmed, france.confirmed, germany.confirmed, austria.confirmed, spain.confirmed, uk.confirmed, iceland.confirmed)
-countries.deaths <- list(switzerland.deaths, italy.deaths, france.deaths, germany.deaths, austria.deaths, spain.deaths, uk.deaths, iceland.deaths)
-countries.recovered <- list(switzerland.recovered, italy.recovered, france.recovered, germany.recovered, austria.recovered, spain.recovered, uk.recovered, iceland.recovered)
+countries.confirmed <- list(switzerland.confirmed, italy.confirmed, france.confirmed, germany.confirmed, austria.confirmed, spain.confirmed, uk.confirmed, denmark.confirmed, norway.confirmed, sweden.confirmed, iceland.confirmed)
+countries.deaths <- list(switzerland.deaths, italy.deaths, france.deaths, germany.deaths, austria.deaths, spain.deaths, uk.deaths, denmark.deaths, norway.deaths, sweden.deaths, iceland.deaths)
+countries.recovered <- list(switzerland.recovered, italy.recovered, france.recovered, germany.recovered, austria.recovered, spain.recovered, uk.recovered, denmark.recovered, norway.recovered, sweden.confirmed, iceland.recovered)
 
 
 day.count <- NROW(switzerland.confirmed)
@@ -179,6 +191,21 @@ plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, "Sp
 plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA)
 ```
 
+## Denmark
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, "Denmark", NA, NA)
+```
+
+## Norway
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, "Norway", NA, NA)
+```
+
+## Sweden
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, "Sweden", NA, NA)
+```
+
 ## Iceland
 ```{r, echo=FALSE, warning=FALSE}
 plot_time_series_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, "Iceland", NA, NA)
@@ -209,14 +236,14 @@ max.y <- 0
 for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(countries.confirmed[[i]])), na.rm = TRUE)
 }
-xrange <- c(50, day.count)
-yrange <- c(0, max.y)
-plot(xrange, yrange, main= "New Confirmed Cases per Day", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day")
+xrange <- c(day.count-10, day.count)
+yrange <- c(0, max.y * 1.5)
+plot(xrange, yrange, main= "New Confirmed Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day")
 for (i in seq(1, country.count)) {
-  lines(seq(2, day.count) - 0.4 + 0.115 * i, diff(countries.confirmed[[i]]), type = "h", col = col[i], lty = 1, lw = 2)
+  lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.confirmed[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 3)
 ```
 
 # Comparison of Number of Deaths
@@ -239,14 +266,14 @@ max.y <- 0
 for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(countries.deaths[[i]])), na.rm = TRUE)
 }
-xrange <- c(50, day.count)
-yrange <- c(0, max.y)
-plot(xrange, yrange, main= "New Deaths per Day", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day")
+xrange <- c(day.count-10, day.count)
+yrange <- c(0, max.y * 1.5)
+plot(xrange, yrange, main= "New Deaths per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day")
 for (i in seq(1, country.count)) {
-  lines(seq(2, day.count) - 0.4 + 0.115 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 2)
+  lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 3)
 ```
 
 # Comparison of Number of Recovered Cases
@@ -273,13 +300,14 @@ max.y <- 0
 for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(countries.recovered[[i]])), na.rm = TRUE)
 }
-yrange <- c(0, max.y)
-plot(xrange, yrange, main= "New Recovered Cases per Day", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Recovered Cases per Day")
+xrange <- c(day.count-10, day.count)
+yrange <- c(0, max.y * 1.5)
+plot(xrange, yrange, main= "New Recovered Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Recovered Cases per Day")
 for (i in seq(1, country.count)) {
-  lines(seq(2, day.count) - 0.4 + 0.115 * i, diff(countries.recovered[[i]]), type = "h", col = col[i], lty = 1, lw = 2)
+  lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.recovered[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 3)
 ```
 
 # Comparison of Number of Active Cases
@@ -309,14 +337,15 @@ for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(y)), na.rm = TRUE)
   min.y <- min(c(min.y, diff(y)), na.rm = TRUE)
 }
-yrange <- c(min.y, max.y)
-plot(xrange, yrange, main= "New Active Cases per Day", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Active Cases per Day")
+xrange <- c(day.count-10, day.count)
+yrange <- c(min.y, max.y * 1.5)
+plot(xrange, yrange, main= "New Active Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Active Cases per Day")
 for (i in seq(1, country.count)) {
   y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
-  lines(seq(2, day.count) - 0.4 + 0.115 * i, diff(y), type = "h", col = col[i], lty = 1, lw = 2)
+  lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(y), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 3)
 ```
 
 # About
