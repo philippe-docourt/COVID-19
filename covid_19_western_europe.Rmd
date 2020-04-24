@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -239,7 +239,7 @@ usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 plot_time_series_for_country(usa.confirmed, usa.deaths, NA, "USA", NA, NA, trend.angle=40)
 ```
 
-# Comparison of Number of Confirmed Cases
+# Comparison of Number of Confirmed Cases in Western Europe
 
 ```{r, echo=FALSE, warning=FALSE}
 xrange <- c(35, day.count)
@@ -266,10 +266,10 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.confirmed[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4)
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 ```
 
-# Comparison of Number of Deaths
+# Comparison of Number of Deaths in Western Europe
 
 ```{r, echo=FALSE, warning=FALSE}
 xrange <- c(40, day.count)
@@ -296,10 +296,10 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4)
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 ```
 
-# Comparison of Number of Recovered Cases
+# Comparison of Number of Recovered Cases in Western Europe
 
 WARNING: The figures seem to be wrong on March 23, 2020.
 
@@ -330,10 +330,10 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(countries.recovered[[i]]), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4)
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 ```
 
-# Comparison of Number of Active Cases
+# Comparison of Number of Active Cases in Western Europe
 
 WARNING: The figures seem to be wrong on March 23, 2020.
 
@@ -369,7 +369,7 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.08 * i, diff(y), type = "h", col = col[i], lty = 1, lw = 4)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4)
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 ```
 
 # About
