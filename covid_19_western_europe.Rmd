@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -341,8 +341,8 @@ WARNING: The figures seem to be wrong on March 23, 2020.
 xrange <- c(40, day.count)
 max.y <- 0
 for (i in seq(1, country.count)) {
-  # Rough estmate we take the max of everything and not the max of active case.
-  max.y <- max(c(max.y, countries.confirmed[[i]], countries.recovered[[i]], countries.deaths[[i]]), na.rm = TRUE)
+  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
+  max.y <- max(c(max.y, y), na.rm = TRUE)
 }
 yrange <- c(0, max.y)
 plot(xrange, yrange, main= "Active Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
