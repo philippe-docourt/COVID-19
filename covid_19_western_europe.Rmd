@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -20,7 +20,7 @@ author: "Philippe Docourt"
 library(data.table)
 
 get_timeseries_as_vector <- function(df) {
-  tmp <- subset(df, select = -c(Province.State, Lat, Long))
+  tmp <- subset(df, select = -c(1:4))
   tmp <- sapply(as.vector(transpose(tmp)), as.integer)
   return(tmp)
 }
