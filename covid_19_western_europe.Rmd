@@ -155,7 +155,7 @@ The figures do not represent the same thing in each country, depending on the ex
 
 ## Switzerland
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 10)
+plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 8)
 ```
 
 ## Italy
@@ -195,12 +195,12 @@ plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovere
 
 ## Norway
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, "Norway", NA, NA, trend.angle = 3)
+plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, "Norway", NA, NA, trend.angle = 0)
 ```
 
 ## Sweden
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, "Sweden", NA, NA, trend.angle = 40)
+plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, "Sweden", NA, NA, trend.angle = 30)
 ```
 
 ## Iceland
