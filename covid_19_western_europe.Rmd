@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -155,22 +155,22 @@ The figures do not represent the same thing in each country, depending on the ex
 
 ## Switzerland
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 5)
+plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 2)
 ```
 
 ## Italy
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, 3)
+plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, trend.angle = 5)
 ```
 
 ## France
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56, trend.angle = 8)
+plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56, trend.angle = 0)
 ```
 
 ## Germany
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", 48, NA, trend.angle = 10)
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", 48, NA, trend.angle = 6)
 ```
 
 ## Austria
@@ -185,12 +185,12 @@ plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, "Sp
 
 ## Great Britain
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA, trend.angle = 30)
+plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA, trend.angle = 22)
 ```
 
 ## Denmark
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, "Denmark", NA, NA, trend.angle = 20)
+plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, "Denmark", NA, NA, trend.angle = 10)
 ```
 
 ## Norway
@@ -236,7 +236,7 @@ usa.deaths <- subset(covid.us.deaths, iso3 == "USA")
 usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
 usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 
-plot_time_series_for_country(usa.confirmed, usa.deaths, NA, "USA", NA, NA, trend.angle=30)
+plot_time_series_for_country(usa.confirmed, usa.deaths, NA, "USA", NA, NA, trend.angle=25)
 ```
 
 # Comparison of Number of Confirmed Cases in Western Europe
