@@ -33,8 +33,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   lines(seq(1, length(country.deaths)), country.deaths, type = "l", col = "black", lty = 1, lw = 1)
   lines(seq(1, length(country.recovered)), country.recovered, type = "l", col = "green", lty = 1, lw = 1)
   grid()
-  axis(side = 1, at = seq(day.start %/% 5 * 5, day.count, 5))
-  
+
   # Trend based on last two observations (last day).
   last.confirmed <- tail(country.confirmed, n = 2)
   dy <-last.confirmed[2] - last.confirmed[1]
