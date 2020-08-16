@@ -9,7 +9,7 @@ See original readme content below or at https://github.com/CSSEGISandData/COVID-
 
 ## Terms of USe
 
-* Data : Copyright 2020 Johns Hopkins University, all rights reserved. See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md.
+* Data : Creative Commons Attribution 4.0 International (CC BY 4.0) by the Johns Hopkins University on behalf of its Center for Systems Science in Engineering.  Copyright Johns Hopkins University 2020. See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md.
 * Source code for generating graphs: Copyright Philippe Docourt. Licensed under MIT License. See https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
 * Graphics : Public Domain
 
