@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -27,9 +27,9 @@ get_timeseries_as_vector <- function(df) {
 
 plot_time_series_for_country <- function(country.confirmed, country.deaths, country.recovered, country.name, public.spaces.closed.at=NA, confinement.at=NA, trend.angle=20) {
     day.count <- nrow(country.confirmed)
-  ylim <- c(0, 1.3 * max(country.confirmed, na.rm = TRUE))
+  ylim <- c(0, 1.35 * max(country.confirmed, na.rm = TRUE))
   day.start <- min(c(45, public.spaces.closed.at, confinement.at), na.rm = TRUE)
-  plot(country.confirmed, main= paste("Cases in", country.name), type = "o", xlab = "Days Since January 21, 2020", ylab = "Number of Cases", col = "red", xlim =  c(day.start, day.count + 7), ylim = ylim)
+  plot(country.confirmed, main= paste("Cases in", country.name), type = "o", xlab = "Days Since January 21, 2020", ylab = "Number of Cases", col = "red", xlim =  c(day.start, day.count + 15), ylim = ylim)
   lines(seq(1, length(country.deaths)), country.deaths, type = "l", col = "black", lty = 1, lw = 1)
   lines(seq(1, length(country.recovered)), country.recovered, type = "l", col = "green", lty = 1, lw = 1)
   grid()
@@ -42,7 +42,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   a <- last.confirmed[1] - (day.count - 1) * slope
   abline(a = a, b = slope, col = "violet", lw = 1.5, lty = 4)
   last.progression.pct <- round((100 * dy) / last.confirmed[1])
-  text(x = day.count - 20, y = 0.55 * ylim[2], paste(dy, "cases/day\nExtrapolation:", dy * 7, "case/w.\n", last.progression.pct, "% progress last day"), srt = trend.angle, col = "violet")
+  text(x = day.count - (35 + trend.angle / 10), y = 0.67 * ylim[2], paste(dy, "cases/day\nExtrapolation:", dy * 7, "case/w.\n", last.progression.pct, "% progress last day"), srt = trend.angle, col = "violet")
   
   # Trend based on last 8 observations (7 intervals, one week)
   last.confirmed <- tail(country.confirmed, n = 8)
@@ -52,13 +52,13 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   a <- last.confirmed[1] - (day.count - 7) * slope
   abline(a = a, b = slope, col = "black", lw = 1.5, lty = 4)
   last.progression.pct <- round((100 * dy) / last.confirmed[1])
-  text(x = day.count - 15, y = (0.88 - (trend.angle/3000)) * ylim[2], paste(dy, "cases/w.\nAvg:", dy %/% 7, "case/day\n", last.progression.pct, "% progress last week"), srt = trend.angle, col = "black")
+  text(x = day.count - (6 + trend.angle / 20), y = (0.4 - (trend.angle/3000)) * ylim[2], paste(dy, "cases/w.\nAvg:", dy %/% 7, "case/day\n", last.progression.pct, "% progress last week"), srt = trend.angle, col = "black")
   
   # Show special measures against propagation.
   ypos = max(country.confirmed, na.rm = TRUE) %/% 3
   if (!is.na(public.spaces.closed.at)) {
     abline(v = public.spaces.closed.at, col = "blue", lw = 1, lty = 5)
-    text(x = public.spaces.closed.at - 1, y = ypos, "All public spaces are closed", col = "blue", srt = 90)
+    text(x = public.spaces.closed.at - 15, y = ypos, "All public spaces are closed", col = "blue", srt = 90)
   }
   if (!is.na(confinement.at)) {
     abline(v = confinement.at, col = "red", lw = 1, lty = 5)
@@ -154,52 +154,52 @@ The figures do not represent the same thing in each country, depending on the ex
 
 ## Switzerland
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 20)
+plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, "Switzerland", 55, NA, trend.angle = 55)
 ```
 
 ## Italy
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, trend.angle = 6)
+plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, "Italy", NA, trend.angle = 55)
 ```
 
 ## France
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56, trend.angle = 15)
+plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, "France", 53, 56, trend.angle = 65)
 ```
 
 ## Germany
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", 48, NA, trend.angle = 20)
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, "Germany", 48, NA, trend.angle = 45)
 ```
 
 ## Austria
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, "Austria", 52, NA, trend.angle = 25)
+plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, "Austria", 52, NA, trend.angle = 60)
 ```
 
 ## Spain
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, "Spain", NA, 53, trend.angle = 17)
+plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, "Spain", NA, 53, trend.angle = 50)
 ```
 
 ## Great Britain
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA, trend.angle = 10)
+plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, "Great Britain", NA, NA, trend.angle = 65)
 ```
 
 ## Denmark
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, "Denmark", NA, NA, trend.angle = 8)
+plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, "Denmark", NA, NA, trend.angle = 50)
 ```
 
 ## Norway
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, "Norway", NA, NA, trend.angle = 0)
+plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, "Norway", NA, NA, trend.angle = 65)
 ```
 
 ## Sweden
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, "Sweden", NA, NA, trend.angle = 15)
+plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, "Sweden", NA, NA, trend.angle = 30)
 ```
 
 ## Iceland
