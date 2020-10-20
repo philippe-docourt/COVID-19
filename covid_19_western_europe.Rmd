@@ -89,12 +89,6 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
     diffs <- diff(country.confirmed - (country.deaths + country.recovered))
     plot(seq(2, day.count), diffs, type = "h", col = "red", xlim =  c(day.start + 1, day.count), main = paste("New Active Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Active Cases per Day", lwd=5)
     grid()
-    
-    if(!is.na(country.population)) {
-      proportion <- diffs/(country.population/100000)
-      plot(seq(2, day.count), proportion, type = "h", col = "red", xlim =  c(day.start + 1, day.count), main = paste("New Active Cases per Day per 100'000 Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Active Cases per 100K P.", lwd=5)
-      grid()
-    }
   }
 }
 
