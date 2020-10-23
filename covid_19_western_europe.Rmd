@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -177,6 +177,8 @@ day.count <- NROW(switzerland.confirmed)
 # Evolution in Switzerland and Western Europe
 
 The figures do not represent the same thing in each country, depending on the extent of the screening tests carried out. Regardless of this problem, the weekly and daily trend curves allow you to get an idea of the foreseeable evolution for the next days (assuming that the screening strategy does not change over time). Respectively, it provides an indication of a possible inflection of the progression of the epidemic in the near future.
+
+IMPORTANT NOTE: The graphics below show values provided by official sources between 0 and 48h before the last update of this document. As an exemple, for Switzerland, you'll see the values up to October 22 at 12AM, even though the gaphics were update on October 24 at 1AM! This is due to the lag between the time slot for communicating official figures and the time slot used by Johns Hopkins CSSE for releasing in their Git repository the aggregated figures for all official sources.
 
 ## Switzerland
 ```{r, echo=FALSE, warning=FALSE}
@@ -365,8 +367,6 @@ for (i in seq(1, country.count)) {
 ```
 
 # Comparison of Number of Active Cases in Western Europe
-
-WARNING: The figures seem to be wrong on March 23, 2020.
 
 ```{r, echo=FALSE, warning=FALSE}
 xrange <- c(40, day.count)
