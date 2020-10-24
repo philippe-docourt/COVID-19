@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -254,6 +254,7 @@ plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, 
 ```{r, echo=FALSE, warning=FALSE}
 plot_time_series_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, iceland.population, "Iceland", NA, NA, trend.angle = 70)
 ```
+
 ## Belgium
 ```{r, echo=FALSE, warning=FALSE}
 plot_time_series_for_country(belgium.confirmed, belgium.deaths, belgium.recovered, belgium.population, "Belgium", 55, NA, trend.angle = 75)
