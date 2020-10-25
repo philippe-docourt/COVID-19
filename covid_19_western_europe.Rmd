@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -70,7 +70,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   
   if(!is.na(country.population)) {
     proportion <- diff(country.confirmed/(country.population/100000))
-    plot(seq(2, day.count), proportion, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day per 100K Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day per 100K P.", lwd = 5)
+    plot(seq(2, day.count), proportion, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day per 100K Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day per 100K P.", lwd = 2)
     grid()
     incidence.last.week <- tail(country.confirmed, n=8)
     incidence.last.week <- round((incidence.last.week[8] - incidence.last.week[1]) / (country.population/100000))
@@ -80,11 +80,11 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
     incidence.last.threeweeks <- round((incidence.last.threeweeks[22] - incidence.last.threeweeks[1]) / (country.population/100000))
     incidence.last.fourweeks <- tail(country.confirmed, n=29)
     incidence.last.fourweeks <- round((incidence.last.fourweeks[29] - incidence.last.fourweeks[1]) / (country.population/100000))
-    evolution.of.incidence <- paste("Evolution of new confirmed cases per 100'000 persons over time:\n\nLast week:", incidence.last.week, "\nLast two weeks:", incidence.last.twoweeks, "\nLast three weeks:", incidence.last.threeweeks, "\nLast four weeks:", incidence.last.fourweeks)
+    evolution.of.incidence <- paste("Evolution of new confirmed cases per 100K persons over time:\n\nLast week:", incidence.last.week, "\nLast two weeks:", incidence.last.twoweeks, "\nLast three weeks:", incidence.last.threeweeks, "\nLast four weeks:", incidence.last.fourweeks)
     text(x = day.start + 0.5 * (day.count - day.start), y = max(proportion) * 0.7, evolution.of.incidence)
   }
   diffs <- diff(country.confirmed)
-  plot(seq(2, day.count), diffs, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day", lwd = 5)
+  plot(seq(2, day.count), diffs, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day", lwd = 2)
   grid()
   last.confirmed <- tail(country.confirmed, n = 9)
   weekly.progress.ratio <- round((last.confirmed[9] + last.confirmed[8]) / (last.confirmed[2] + last.confirmed[1]), digits = 2)
@@ -98,20 +98,20 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   
   if(!is.na(country.population)) {
     proportion <- diff(country.deaths/(country.population/1000000))
-    plot(seq(2, day.count), proportion, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day per 1 Million Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day per 1M P.", lwd = 5)
+    plot(seq(2, day.count), proportion, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day per 1 Million Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day per 1M P.", lwd = 2)
     grid()
   }
   diffs <- diff(country.deaths)
-  plot(seq(2, day.count), diffs, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day", lwd = 5)
+  plot(seq(2, day.count), diffs, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day", lwd = 2)
   grid()
   
   if (!is.na(country.recovered)) {
     diffs <- diff(country.recovered)
-    plot(seq(2, day.count), diffs, type = "h", col = "green", xlim =  c(day.start + 1, day.count),  main = paste("New Recovered Cases per Day in", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Recovered Cases per Day", lwd = 5)
+    plot(seq(2, day.count), diffs, type = "h", col = "green", xlim =  c(day.start + 1, day.count),  main = paste("New Recovered Cases per Day in", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Recovered Cases per Day", lwd = 2)
     grid()
     
     diffs <- diff(country.confirmed - (country.deaths + country.recovered))
-    plot(seq(2, day.count), diffs, type = "h", col = "red", xlim =  c(day.start + 1, day.count), main = paste("New Active Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Active Cases per Day", lwd=5)
+    plot(seq(2, day.count), diffs, type = "h", col = "red", xlim =  c(day.start + 1, day.count), main = paste("New Active Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Active Cases per Day", lwd = 2)
     grid()
   }
 }
