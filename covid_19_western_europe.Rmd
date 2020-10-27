@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -25,7 +25,7 @@ get_timeseries_as_vector <- function(df) {
   return(tmp)
 }
 
-plot_time_series_for_country <- function(country.confirmed, country.deaths, country.recovered, country.population=NA, country.name="", public.spaces.closed.at=NA, confinement.at=NA, trend.angle=20) {
+plot_time_series_for_country <- function(country.confirmed, country.deaths, country.recovered=NULL, country.population=NA, country.name="", public.spaces.closed.at=NA, confinement.at=NA, trend.angle=20) {
   day.count <- nrow(country.confirmed)
   
   ylim <- c(0, 1.35 * max(country.confirmed, na.rm = TRUE))
@@ -105,7 +105,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   plot(seq(2, day.count), diffs, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day", lwd = 2)
   grid()
   
-  if (!is.na(country.recovered)) {
+  if (!is.null(country.recovered)) {
     diffs <- diff(country.recovered)
     plot(seq(2, day.count), diffs, type = "h", col = "green", xlim =  c(day.start + 1, day.count),  main = paste("New Recovered Cases per Day in", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Recovered Cases per Day", lwd = 2)
     grid()
@@ -289,7 +289,7 @@ usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
 usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 
 usa.population <- 330052960
-plot_time_series_for_country(usa.confirmed, usa.deaths, NA, usa.population, "USA", NA, NA, trend.angle=25)
+plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=25)
 ```
 
 # Comparison of Number of Confirmed Cases in Western Europe
