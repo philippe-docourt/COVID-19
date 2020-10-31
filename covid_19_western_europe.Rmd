@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -289,7 +289,7 @@ usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
 usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 
 usa.population <- 330052960
-plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=25)
+plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=50)
 ```
 
 # Comparison of Number of Confirmed Cases in Western Europe
