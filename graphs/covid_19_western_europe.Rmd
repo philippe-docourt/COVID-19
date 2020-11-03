@@ -1,0 +1,549 @@
+---
+title: "COVID-19 in Switzerland and Western Europe"
+output:
+  html_document: 
+    number_sections: yes
+    toc: yes
+  html_notebook: 
+    fig_height: 5
+    fig_width: 7
+    number_sections: yes
+    toc: yes
+  word_document: 
+    toc: yes
+  pdf_document: default
+date: "Last updated: `r format(Sys.time(), '%d %B, %Y - %H:%M')`"
+author: "Philippe Docourt"
+---
+
+```{r, echo=FALSE, warning=FALSE}
+library(data.table)
+
+get_timeseries_as_vector <- function(df) {
+  tmp <- subset(df, select = -c(1:4))
+  tmp <- sapply(as.vector(transpose(tmp)), as.integer)
+  return(tmp)
+}
+
+plot_time_series_for_country <- function(country.confirmed, country.deaths, country.recovered=NULL, country.population=NA, country.name="", public.spaces.closed.at=NA, confinement.at=NA, trend.angle=20) {
+  day.count <- nrow(country.confirmed)
+  
+  ylim <- c(0, 1.35 * max(country.confirmed, na.rm = TRUE))
+  day.start <- min(c(45, public.spaces.closed.at, confinement.at), na.rm = TRUE)
+  plot(country.confirmed, main= paste("Cases in", country.name), type = "o", xlab = "Days Since January 21, 2020", ylab = "Cumulated Number of Confirmed Cases", col = "red", xlim =  c(day.start, day.count + 15), ylim = ylim)
+  lines(seq(1, length(country.deaths)), country.deaths, type = "l", col = "black", lty = 1, lw = 1)
+  lines(seq(1, length(country.recovered)), country.recovered, type = "l", col = "green", lty = 1, lw = 1)
+  grid()
+  
+  # Trend based on last two observations (last day).
+  last.confirmed <- tail(country.confirmed, n = 2)
+  dy <-last.confirmed[2] - last.confirmed[1]
+  slope <- dy
+  u <- c(1, dy)
+  a <- last.confirmed[1] - (day.count - 1) * slope
+  abline(a = a, b = slope, col = "violet", lw = 1.5, lty = 4)
+  last.progression.pct <- round((100 * dy) / last.confirmed[1])
+  text(x = day.count - (25 + trend.angle / 10), y = 0.67 * ylim[2], paste(dy, "cases/day\nExtrapolation:", dy * 7, "case/w.\n", last.progression.pct, "% progress last day"), srt = trend.angle, col = "violet")
+  
+  # Trend based on last 8 observations (7 intervals, one week)
+  last.confirmed <- tail(country.confirmed, n = 8)
+  dy <-last.confirmed[8] - last.confirmed[1]
+  slope <- dy / 7
+  u <- c(7, dy)
+  a <- last.confirmed[1] - (day.count - 7) * slope
+  abline(a = a, b = slope, col = "black", lw = 1.5, lty = 4)
+  last.progression.pct <- round((100 * dy) / last.confirmed[1])
+  text(x = day.count + 4 - (trend.angle / 20), y = (0.4 - (trend.angle/3000)) * ylim[2], paste(dy, "cases/w.\nAvg:", dy %/% 7, "case/day\n", last.progression.pct, "% progress last week"), srt = trend.angle, col = "black")
+
+  # Show special measures against propagation.
+  ypos = max(country.confirmed, na.rm = TRUE) %/% 3
+  if (!is.na(public.spaces.closed.at)) {
+    abline(v = public.spaces.closed.at, col = "blue", lw = 1, lty = 5)
+    text(x = public.spaces.closed.at - 5, y = ypos, "All public spaces are closed", col = "blue", srt = 90)
+  }
+  if (!is.na(confinement.at)) {
+    abline(v = confinement.at, col = "red", lw = 1, lty = 5)
+    text(x = confinement.at - 5, y = ypos, "Population is confined", col = "red", srt = 90)
+  }
+  
+  legend("topleft", legend = c("Confirmed", "Deaths", "Recovered", "Confirmed trend based on last day", "Confirmed trend based on last week"), col = c("red", "black", "green", "violet", "black"), lty = c(rep(1, 3), 2, 3), lw = c(rep(1, 3), 1.5, 1.5))
+  
+  if(!is.na(country.population)) {
+    proportion <- diff(country.confirmed/(country.population/100000))
+    plot(seq(2, day.count), proportion, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day per 100K Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day per 100K P.", lwd = 2)
+    grid()
+    incidence.last.week <- tail(country.confirmed, n=8)
+    incidence.last.week <- round((incidence.last.week[8] - incidence.last.week[1]) / (country.population/100000))
+    incidence.last.twoweeks <- tail(country.confirmed, n=15)
+    incidence.last.twoweeks <- round((incidence.last.twoweeks[15] - incidence.last.twoweeks[1]) / (country.population/100000))
+    incidence.last.threeweeks <- tail(country.confirmed, n=22)
+    incidence.last.threeweeks <- round((incidence.last.threeweeks[22] - incidence.last.threeweeks[1]) / (country.population/100000))
+    incidence.last.fourweeks <- tail(country.confirmed, n=29)
+    incidence.last.fourweeks <- round((incidence.last.fourweeks[29] - incidence.last.fourweeks[1]) / (country.population/100000))
+    evolution.of.incidence <- paste("Evolution of new confirmed cases per 100K persons over time:\n\nLast week:", incidence.last.week, "\nLast two weeks:", incidence.last.twoweeks, "\nLast three weeks:", incidence.last.threeweeks, "\nLast four weeks:", incidence.last.fourweeks)
+    text(x = day.start + 0.5 * (day.count - day.start), y = max(proportion) * 0.7, evolution.of.incidence)
+  }
+  diffs <- diff(country.confirmed)
+  plot(seq(2, day.count), diffs, type = "h", col = "cyan", xlim =  c(day.start + 1, day.count), main = paste("New Confirmed Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Cases per Day", lwd = 2)
+  grid()
+  last.confirmed <- tail(country.confirmed, n = 9)
+  weekly.progress.ratio <- round((last.confirmed[9] + last.confirmed[8]) / (last.confirmed[2] + last.confirmed[1]), digits = 2)
+  last.confirmed <- tail(country.confirmed, n = 16)
+  twoweeks.progress.ratio <- round((last.confirmed[16] + last.confirmed[15]) / (last.confirmed[2] + last.confirmed[1]), digits = 2)
+  last.confirmed <- tail(country.confirmed, n = 23)
+  threeweeks.progress.ratio <- round((last.confirmed[23] + last.confirmed[22]) / (last.confirmed[2] + last.confirmed[1]), digits = 2)
+  last.confirmed <- tail(country.confirmed, n = 30)
+  monthly.progress.ratio <- round((last.confirmed[30] + last.confirmed[29]) / (last.confirmed[2] + last.confirmed[1]), digits = 2)
+  text(x = day.start + 0.5 * (day.count - day.start), y = max(diffs)*0.8, paste("Progression of new confirmed cases per day:\n\nLast week: x ", weekly.progress.ratio, " (", round(((twoweeks.progress.ratio/weekly.progress.ratio)-1)*100, 1),  "% compared to prev. week)\nLast 2 weeks: x ", twoweeks.progress.ratio, " (", round(((threeweeks.progress.ratio/twoweeks.progress.ratio)-1)*100, 1),  "% compared to prev. week)\nLast 3 weeks: x ", threeweeks.progress.ratio, " (", round(((monthly.progress.ratio/threeweeks.progress.ratio-1)*100), 1),  "% compared to prev. week)\nLast 4 weeks: x ", monthly.progress.ratio, sep=""), col = "black")
+  
+  if(!is.na(country.population)) {
+    proportion <- diff(country.deaths/(country.population/1000000))
+    plot(seq(2, day.count), proportion, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day per 1 Million Persons", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day per 1M P.", lwd = 2)
+    grid()
+  }
+  diffs <- diff(country.deaths)
+  plot(seq(2, day.count), diffs, type = "h", col = "black", xlim =  c(day.start + 1, day.count), main = paste("New Deaths per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Deaths per Day", lwd = 2)
+  grid()
+  
+  if (!is.null(country.recovered)) {
+    diffs <- diff(country.recovered)
+    plot(seq(2, day.count), diffs, type = "h", col = "green", xlim =  c(day.start + 1, day.count),  main = paste("New Recovered Cases per Day in", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Recovered Cases per Day", lwd = 2)
+    grid()
+    
+    diffs <- diff(country.confirmed - (country.deaths + country.recovered))
+    plot(seq(2, day.count), diffs, type = "h", col = "red", xlim =  c(day.start + 1, day.count), main = paste("New Active Cases per Day", country.name, sep = " in "), xlab = "Days Since January 21, 2020", ylab = "Number of New Active Cases per Day", lwd = 2)
+    grid()
+  }
+}
+
+covid <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+covid.deaths <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv")
+covid.recovered <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv")
+
+country.names <- c("Switzerland", "Italy", "France", "Germany", "Austria" , "Spain", "Great Britain", "Denmark", "Norway", "Sweden", "Iceland", "Belgium")
+country.count <- length(country.names)
+col <- rainbow(country.count)
+lty <- seq(1, country.count)
+pch <- seq(10, 10 + country.count)
+
+switzerland.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Switzerland"))
+switzerland.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Switzerland"))
+switzerland.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Switzerland"))
+switzerland.population <- 8570000
+
+italy.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Italy"))
+italy.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Italy"))
+italy.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Italy"))
+italy.population <- 60360000
+
+france.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "France" & Province.State == ""))
+france.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "France" & Province.State == ""))
+france.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "France" & Province.State == ""))
+france.population <- 66990000
+
+germany.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Germany"))
+germany.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Germany"))
+germany.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Germany"))
+germany.population <- 83020000
+
+austria.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Austria"))
+austria.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Austria"))
+austria.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Austria"))
+austria.population <- 8859000
+
+spain.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Spain"))
+spain.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Spain"))
+spain.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Spain"))
+spain.population <- 46940000
+
+uk.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "United Kingdom" & Province.State == ""))
+uk.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "United Kingdom" & Province.State == ""))
+uk.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "United Kingdom" & Province.State == ""))
+uk.population <- 66650000
+
+denmark.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Denmark" & Province.State == ""))
+denmark.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Denmark" & Province.State == ""))
+denmark.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Denmark" & Province.State == ""))
+denmark.population <- 5806000
+
+norway.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Iceland"))
+norway.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Iceland"))
+norway.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Iceland"))
+norway.population <- 5433000
+
+sweden.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Sweden"))
+sweden.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Sweden"))
+sweden.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Sweden"))
+sweden.population <- 10230000
+
+iceland.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Iceland"))
+iceland.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Iceland"))
+iceland.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Iceland"))
+iceland.population <- 364134
+
+belgium.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "Belgium"))
+belgium.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "Belgium"))
+belgium.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "Belgium"))
+belgium.population <- 11492641
+
+countries.confirmed <- list(switzerland.confirmed, italy.confirmed, france.confirmed, germany.confirmed, austria.confirmed, spain.confirmed, uk.confirmed, denmark.confirmed, norway.confirmed, sweden.confirmed, iceland.confirmed, belgium.confirmed)
+countries.deaths <- list(switzerland.deaths, italy.deaths, france.deaths, germany.deaths, austria.deaths, spain.deaths, uk.deaths, denmark.deaths, norway.deaths, sweden.deaths, iceland.deaths, belgium.deaths)
+countries.recovered <- list(switzerland.recovered, italy.recovered, france.recovered, germany.recovered, austria.recovered, spain.recovered, uk.recovered, denmark.recovered, norway.recovered, sweden.confirmed, iceland.recovered, belgium.recovered)
+countries.population <- list(switzerland.population, italy.population, france.population, germany.population, austria.population, spain.population, uk.population, denmark.population, norway.population, sweden.confirmed, iceland.population, belgium.population)
+
+day.count <- NROW(switzerland.confirmed)
+```
+
+# Evolution in Switzerland and Western Europe
+
+The figures do not represent the same thing in each country, depending on the extent of the screening tests carried out. Regardless of this problem, the weekly and daily trend curves allow you to get an idea of the foreseeable evolution for the next days (assuming that the screening strategy does not change over time). Respectively, it provides an indication of a possible inflection of the progression of the epidemic in the near future.
+
+IMPORTANT NOTE: The graphics below show values provided by official sources between 0 and 48h before the last update of this document. As an exemple, for Switzerland, you'll see the values up to October 22 at 12AM, even though the gaphics were update on October 24 at 1AM! This is due to the lag between the time slot for communicating official figures and the time slot used by Johns Hopkins CSSE for releasing in their Git repository the aggregated figures for all official sources.
+
+## Switzerland
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, switzerland.population, "Switzerland", 55, NA, trend.angle = 75)
+```
+
+## Italy
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, italy.population, "Italy", NA, trend.angle = 70)
+```
+
+## France
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered, france.population, "France", 53, 56, trend.angle = 70)
+```
+
+## Germany
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, germany.population, "Germany", 48, NA, trend.angle = 65)
+```
+
+## Austria
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, austria.population, "Austria", 52, NA, trend.angle = 70)
+```
+
+## Spain
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, spain.population, "Spain", NA, 53, trend.angle = 65)
+```
+
+## Great Britain
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, uk.population, "Great Britain", NA, NA, trend.angle = 65)
+```
+
+## Denmark
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, denmark.population, "Denmark", NA, NA, trend.angle = 65)
+```
+
+## Norway
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(norway.confirmed, norway.deaths, norway.recovered, norway.population, "Norway", NA, NA, trend.angle = 65)
+```
+
+## Sweden
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, sweden.population, "Sweden", NA, NA, trend.angle = 60)
+```
+
+## Iceland
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(iceland.confirmed, iceland.deaths, iceland.recovered, iceland.population, "Iceland", NA, NA, trend.angle = 70)
+```
+
+## Belgium
+```{r, echo=FALSE, warning=FALSE}
+plot_time_series_for_country(belgium.confirmed, belgium.deaths, belgium.recovered, belgium.population, "Belgium", 55, NA, trend.angle = 75)
+```
+
+# What Happened in Hubei Province (China)
+
+```{r, echo=FALSE, warning=FALSE}
+hubei.confirmed <- get_timeseries_as_vector(subset(covid, Country.Region == "China" & Province.State == "Hubei"))
+hubei.deaths <- get_timeseries_as_vector(subset(covid.deaths, Country.Region == "China" & Province.State == "Hubei"))
+hubei.recovered <- get_timeseries_as_vector(subset(covid.recovered, Country.Region == "China" & Province.State == "Hubei"))
+
+plot_time_series_for_country(hubei.confirmed, hubei.deaths, hubei.recovered, NA, "Hubei Province, China", NA, 2, trend.angle = 0)
+```
+
+# What Is Happening in USA
+
+```{r, echo=FALSE, warning=FALSE}
+get_sum_of_timeseries_as_vector_for_usa <- function(df, exlude) {
+  tmp <- colSums(subset(df, select = -exlude))
+  tmp <- sapply(as.vector(transpose(as.list(tmp))), as.integer)
+  return(tmp)
+}
+
+covid.us <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_US.csv")
+covid.us.deaths <- read.csv("csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_US.csv")
+
+usa.confirmed <- subset(covid.us, iso3 == "USA")
+usa.deaths <- subset(covid.us.deaths, iso3 == "USA")
+
+usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
+usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
+
+usa.population <- 330052960
+plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=25)
+```
+
+# Comparison of Number of Confirmed Cases in Western Europe
+
+```{r, echo=FALSE, warning=FALSE}
+xrange <- c(35, day.count)
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, countries.confirmed[[i]]), na.rm = TRUE)
+}
+yrange <- c(0, max.y)
+plot(xrange, yrange, main= "Confirmed Cases", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of Cases")
+for (i in seq(1, country.count)) {
+  lines(seq(1, day.count), countries.confirmed[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+}
+grid()
+legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, diff(tail(countries.confirmed[[i]]))), na.rm = TRUE)
+}
+xrange <- c(day.count-10, day.count+0.2)
+yrange <- c(0, max.y * 1.3)
+plot(xrange, yrange, main= "New Confirmed Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day")
+
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.confirmed[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
+}
+
+plot(xrange, yrange/600, main= "New Confirmed Cases per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day per 100K P.")
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.confirmed[[i]])/(countries.population[[i]][1]/100000), type = "h", col = col[i], lty = 1, lw = 3)
+}
+```
+
+# Comparison of Number of Deaths in Western Europe
+
+```{r, echo=FALSE, warning=FALSE}
+xrange <- c(40, day.count)
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, countries.deaths[[i]]), na.rm = TRUE)
+}
+yrange <- c(0, max.y)
+plot(xrange, yrange, main= "Deaths", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Deaths")
+grid()
+legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+for (i in seq(1, country.count)) {
+  lines(seq(1, day.count), countries.deaths[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+}
+
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, diff(tail(countries.deaths[[i]]))), na.rm = TRUE)
+}
+xrange <- c(day.count-10, day.count+0.2)
+yrange <- c(0, max.y * 1.3)
+plot(xrange, yrange, main= "New Deaths per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day")
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
+}
+
+plot(xrange, yrange/2, main= "New Deaths per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day per 100K P.")
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.confirmed[[i]])/(countries.population[[i]][1]/100000), type = "h", col = col[i], lty = 1, lw = 3)
+}
+```
+
+# Comparison of Number of Recovered Cases in Western Europe
+
+```{r, echo=FALSE, warning=FALSE}
+xrange <- c(40, day.count)
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, countries.recovered[[i]]), na.rm = TRUE)
+}
+xrange <- c(50, day.count)
+yrange <- c(0, max.y)
+plot(xrange, yrange, main= "Recovered Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
+grid()
+legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+for (i in seq(1, country.count)) {
+  d <- nrow(countries.recovered[[i]])
+  lines(seq(1, d), countries.recovered[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+}
+
+max.y <- 0
+for (i in seq(1, country.count)) {
+  max.y <- max(c(max.y, diff(tail(countries.recovered[[i]]))), na.rm = TRUE)
+}
+xrange <- c(day.count-10, day.count+0.2)
+yrange <- c(0, max.y * 1.3)
+plot(xrange, yrange, main= "New Recovered Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Recovered Cases per Day")
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.recovered[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
+}
+```
+
+# Comparison of Number of Active Cases in Western Europe
+
+```{r, echo=FALSE, warning=FALSE}
+xrange <- c(40, day.count)
+max.y <- 0
+for (i in seq(1, country.count)) {
+  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
+  max.y <- max(c(max.y, y), na.rm = TRUE)
+}
+yrange <- c(0, max.y)
+plot(xrange, yrange, main= "Active Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
+grid()
+legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+for (i in seq(1, country.count)) {
+  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
+  lines(seq(1, d), y, type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+}
+
+min.y <- 0
+max.y <- 0
+for (i in seq(1, country.count)) {
+  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
+  y <- tail(y, 10)
+  max.y <- max(c(max.y, diff(y)), na.rm = TRUE)
+  min.y <- min(c(min.y, diff(y)), na.rm = TRUE)
+}
+xrange <- c(day.count-10, day.count+0.2)
+yrange <- c(min.y, max.y * 1.3)
+plot(xrange, yrange, main= "New Active Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Active Cases per Day")
+grid()
+legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
+for (i in seq(1, country.count)) {
+  y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
+  lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(y), type = "h", col = col[i], lty = 1, lw = 3)
+}
+```
+
+# About
+
+All the graphs above are generated from the data provided by Johns Hopkins CSSE (provided to the public strictly for educational and academic research purposes).
+
+The source code for generating the graphs is available under MIT License at https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
+
+The data are provided as *2019 Novel Coronavirus COVID-19 (2019-nCoV) Data Repository by Johns Hopkins CSSE* (see https://github.com/CSSEGISandData/COVID-19).
+
+See https://github.com/philippe-docourt/COVID-19/blob/master/README.md for more details.
+
+## Data Sources
+
+* Aggregated data sources:
+  * World Health Organization (WHO): https://www.who.int/
+  * European Centre for Disease Prevention and Control (ECDC): https://www.ecdc.europa.eu/en/geographical-distribution-2019-ncov-cases 
+  * DXY.cn. Pneumonia. 2020. http://3g.dxy.cn/newh5/view/pneumonia
+  * US CDC: https://www.cdc.gov/coronavirus/2019-ncov/index.html
+  * BNO News: https://bnonews.com/index.php/2020/02/the-latest-coronavirus-cases/
+  * WorldoMeters: https://www.worldometers.info/coronavirus/  
+  * 1Point3Arces: https://coronavirus.1point3acres.com/en  
+  * COVID Tracking Project: https://covidtracking.com/data. (US Testing and Hospitalization Data. We use the maximum reported value from "Currently" and "Cumulative" Hospitalized for our hospitalization number reported for each state.)
+
+* US data sources at the state (Admin1) or county/city (Admin2) level:  
+  * Washington State Department of Health: https://www.doh.wa.gov/emergencies/coronavirus
+  * Maryland Department of Health: https://coronavirus.maryland.gov/
+  * New York State Department of Health: https://health.data.ny.gov/Health/New-York-State-Statewide-COVID-19-Testing/xdss-u53e/data
+  * NYC Department of Health and Mental Hygiene: https://www1.nyc.gov/site/doh/covid/covid-19-data.page and https://github.com/nychealth/coronavirus-data
+  * Florida Department of Health Dashboard: https://services1.arcgis.com/CY1LXxl9zlJeBuRZ/arcgis/rest/services/Florida_COVID19_Cases/FeatureServer/0
+    and https://fdoh.maps.arcgis.com/apps/opsdashboard/index.html#/8d0de33f260d444c852a615dc7837c86
+  * Colorado: https://covid19.colorado.gov/covid-19-data
+  * Virginia: https://www.vdh.virginia.gov/coronavirus/
+  * Northern Mariana Islands CNMI Department of Public Health: https://cnmichcc.maps.arcgis.com/apps/opsdashboard/index.html#/4061b674fc964efe84f7774b7979d2b5
+  * Missouri Department of Health: https://www.arcgis.com/apps/MapSeries/index.html?appid=8e01a5d8d8bd4b4f85add006f9e14a9d
+  * St. Louis City Department of Health: https://www.stlouis-mo.gov/covid-19/data/#totalsByDate
+  * St. Louis County: https://stlcorona.com/resources/covid-19-statistics1/
+  * Massachusetts: https://www.mass.gov/info-details/covid-19-response-reporting
+  * Michigan: https://www.michigan.gov/coronavirus/0,9753,7-406-98163_98173---,00.html 
+  * Illinois Department of Public Health: https://dph.illinois.gov/covid19
+  * Indiana State Department of Health: https://hub.mph.in.gov/dataset?q=COVID
+  * Connecticut Department of Public Health: https://data.ct.gov/stories/s/COVID-19-data/wa3g-tfvc/
+  * Ohio Department of Health: https://coronavirus.ohio.gov/wps/portal/gov/covid-19/home
+  * Oregon Office of Emergency Management: https://experience.arcgis.com/experience/fff9f83827c5461583cd014fdf4587de
+  * Tennessee Department of Health: https://www.tn.gov/health/cedep/ncov.html
+  * Rhode Island Department of Health: https://ri-department-of-health-covid-19-data-rihealth.hub.arcgis.com/
+  * Wisconsin Department of Health Services: https://www.dhs.wisconsin.gov/covid-19/data.htm
+  * North Carolina City of Greenville GIS: https://www.arcgis.com/apps/opsdashboard/index.html#/7aeac695cafa4065ba1505b1cfa72747
+  * Iowa State Government: https://coronavirus.iowa.gov/
+  * Minnesota Department of Health: https://www.health.state.mn.us/diseases/coronavirus/situation.html
+  * Alabama Samford University's Department of Geography and Sociology: https://experience.arcgis.com/experience/e03f87e48a234feebbad27d0ee7ff824
+  * Mississippi State Department of Health: https://msdh.ms.gov/msdhsite/_static/14,0,420.html
+  * Nebraska Department of Health and Human Services: https://experience.arcgis.com/experience/ece0db09da4d4ca68252c3967aa1e9dd
+  * South Carolina Department of Health and Environmental Control: https://scdhec.gov/infectious-diseases/viruses/coronavirus-disease-2019-covid-19/sc-testing-data-projections-covid-19
+  * Nevada Department of Health and Human Services: https://nvhealthresponse.nv.gov/
+  * New Jersey Department of Health: https://covid19.nj.gov/
+  * Delaware Emergency Management Agency: https://coronavirus.delaware.gov/
+  * Utah Department of Health: https://coronavirus-dashboard.utah.gov/#overview
+  * Arizona Emergency Support Function (ESF)/Recovery Support Function (RSF) Operations Dashboard: https://www.arcgis.com/apps/MapSeries/index.html?appid=62e6bfa682a34e6aae9d9255ac865467
+  * Departamento de Salud, Puerto Rico: https://bioseguridad.maps.arcgis.com/apps/opsdashboard/index.html#/d7308c1abb4747e584329adf1215125e
+  * Arkansas Department of Health: https://experience.arcgis.com/experience/c2ef4a4fcbe5458fbf2e48a21e4fece9
+  * Maine Department of Health and Human Services: https://www.maine.gov/dhhs/mecdc/infectious-disease/epi/airborne/coronavirus/data.shtml
+  * Pennsylvania Department of Health: https://www.health.pa.gov/topics/disease/coronavirus/Pages/Cases.aspx
+  * City of Philadelphia: https://www.phila.gov/programs/coronavirus-disease-2019-covid-19/
+  * Lancaster County: https://covid-19-lancastercountypa.hub.arcgis.com/
+  * Chester County: https://chesco.maps.arcgis.com/apps/opsdashboard/index.html#/975082d579454c3ca7877db0a44e61ca
+  * Louisiana Department of Health: http://ldh.la.gov/coronavirus/
+  * Government of The District of Columbia: https://coronavirus.dc.gov/page/coronavirus-data 
+
+* Non-US data sources at the country/region (Admin0) or state/province (Admin1) level:
+  * National Health Commission of the People’s Republic of China (NHC):
+    http://www.nhc.gov.cn/xcs/yqtb/list_gzbd.shtml
+  * China CDC (CCDC): http://weekly.chinacdc.cn/news/TrackingtheEpidemic.htm
+  * Hong Kong Department of Health: https://www.chp.gov.hk/en/features/102465.html
+  * Macau Government: https://www.ssm.gov.mo/portal/
+  * Taiwan CDC: https://sites.google.com/cdc.gov.tw/2019ncov/taiwan?authuser=0
+  * Government of Canada: https://www.canada.ca/en/public-health/services/diseases/coronavirus.html
+  * Australia Government Department of Health: https://www.health.gov.au/news/coronavirus-update-at-a-glance
+  * COVID Live (Australia): https://www.covidlive.com.au/
+  * Ministry of Health Singapore (MOH): https://www.moh.gov.sg/covid-19
+  * Italy Ministry of Health: http://www.salute.gov.it/nuovocoronavirus
+  * Dati COVID-19 Italia (Italy): https://github.com/pcm-dpc/COVID-19/tree/master/dati-regioni
+  * French Government: https://dashboard.covid19.data.gouv.fr/ and https://github.com/opencovid19-fr/data/blob/master/dist/chiffres-cles.json
+  * OpenCOVID19 France: https://github.com/opencovid19-fr
+  * Palestine (West Bank and Gaza): https://corona.ps/details
+  * Israel: https://govextra.gov.il/ministry-of-health/corona/corona-virus/
+  * Ministry of Health, Republic of Kosovo: https://kosova.health/ and https://covidks.s3.amazonaws.com/data.json
+  * Berliner Morgenpost (Germany): https://interaktiv.morgenpost.de/corona-virus-karte-infektionen-deutschland-weltweit/
+  * rtve (Spain): https://www.rtve.es/noticias/20200514/mapa-del-coronavirus-espana/2004681.shtml
+  * Ministry of Health, Republic of Serbia: https://covid19.rs/homepage-english/ 
+  * Chile: https://www.minsal.cl/nuevo-coronavirus-2019-ncov/casos-confirmados-en-chile-covid-19/
+  * Brazil Ministry of Health: https://covid.saude.gov.br/
+  * Brazil: https://github.com/wcota/covid19br. Data described in [DOI: 10.1590/SciELOPreprints.362](https://doi.org/10.1590/SciELOPreprints.362)
+  * Gobierono De Mexico:https://covid19.sinave.gob.mx/
+  * Japan COVID-19 Coronavirus Tracker: https://covid19japan.com/#all-prefectures
+  * Monitoreo del COVID-19 en Perú -  Policía Nacional del Perú (PNP) - Dirección de Inteligencia (DIRIN): https://www.arcgis.com/apps/opsdashboard/index.html#/f90a7a87af2548699d6e7bb72f5547c2 and Ministerio de Salud del Perú: https://covid19.minsa.gob.pe/sala_situacional.asp
+  Colombia National Institute of Health: http://www.ins.gov.co/Noticias/Paginas/Coronavirus.aspx
+  Russia: https://xn--80aesfpebagmfblc0a.xn--p1ai/information/
+  Ukraine: https://covid19.rnbo.gov.ua/
+  Public Health Agency of Sweden: https://experience.arcgis.com/experience/09f821667ce64bf7be6f9f87457ed9aa
+  India Ministry of Health and Family Welfare: https://www.mohfw.gov.in/
+  Government of Pakistan: http://covid.gov.pk/stats/pakistan
+  The UK Government: https://coronavirus.data.gov.uk/#category=nations&map=rate
+  Scottish Government: https://www.gov.scot/publications/coronavirus-covid-19-trends-in-daily-data/
+  Netherlands National Institute for Health and Environment: https://experience.arcgis.com/experience/ea064047519040469acb8da05c0f100d
+  Iceland The Directorate of Health and The Department of Civil Protection and Emergency Management: https://www.covid.is/data
+
+## Terms of Use
+
+* Data : Creative Commons Attribution 4.0 International (CC BY 4.0) by the Johns Hopkins University on behalf of its Center for Systems Science in Engineering.  Copyright Johns Hopkins University 2020. See https://github.com/CSSEGISandData/COVID-19/blob/master/README.md.
+* Source code for generating graphs: Copyright Philippe Docourt. Licensed under MIT License. See https://github.com/philippe-docourt/COVID-19/blob/master/covid_19_western_europe.Rmd.
+* Graphics : Public Domain
+

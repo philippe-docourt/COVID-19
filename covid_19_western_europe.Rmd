@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -289,7 +289,7 @@ usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
 usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 
 usa.population <- 330052960
-plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=25)
+plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=50)
 ```
 
 # Comparison of Number of Confirmed Cases in Western Europe
@@ -303,17 +303,17 @@ for (i in seq(1, country.count)) {
 yrange <- c(0, max.y)
 plot(xrange, yrange, main= "Confirmed Cases", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of Cases")
 for (i in seq(1, country.count)) {
-  lines(seq(1, day.count), countries.confirmed[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  lines(seq(1, day.count), countries.confirmed[[i]], type = "b", col = col[i], lty = 2, pch = 20, lw = 0.5)
 }
 grid()
-legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 2, pch = 20, title = "Country")
 
 max.y <- 0
 for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(tail(countries.confirmed[[i]]))), na.rm = TRUE)
 }
 xrange <- c(day.count-10, day.count+0.2)
-yrange <- c(0, max.y * 1.3)
+yrange <- c(0, max.y * 1.6)
 plot(xrange, yrange, main= "New Confirmed Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day")
 
 grid()
@@ -322,7 +322,7 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.075 * i, diff(countries.confirmed[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
 }
 
-plot(xrange, yrange/600, main= "New Confirmed Cases per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day per 100K P.")
+plot(xrange, yrange/300, main= "New Confirmed Cases per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day per 100K P.")
 grid()
 legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 for (i in seq(1, country.count)) {
@@ -341,9 +341,9 @@ for (i in seq(1, country.count)) {
 yrange <- c(0, max.y)
 plot(xrange, yrange, main= "Deaths", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Deaths")
 grid()
-legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 2, pch = 20, title = "Country")
 for (i in seq(1, country.count)) {
-  lines(seq(1, day.count), countries.deaths[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  lines(seq(1, day.count), countries.deaths[[i]], type = "b", col = col[i], lty = 2, pch = 20, lw = 1)
 }
 
 max.y <- 0
@@ -379,10 +379,10 @@ xrange <- c(50, day.count)
 yrange <- c(0, max.y)
 plot(xrange, yrange, main= "Recovered Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
 grid()
-legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 2, pch = 20, title = "Country")
 for (i in seq(1, country.count)) {
   d <- nrow(countries.recovered[[i]])
-  lines(seq(1, d), countries.recovered[[i]], type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  lines(seq(1, d), countries.recovered[[i]], type = "b", col = col[i], lty = 2, pch = 20, lw = 1)
 }
 
 max.y <- 0
@@ -411,10 +411,10 @@ for (i in seq(1, country.count)) {
 yrange <- c(0, max.y)
 plot(xrange, yrange, main= "Active Cases", type = "n", xlab = "Days Since January 21, 2020", ylab = "Number of Cases")
 grid()
-legend("topleft", legend = country.names, col = col, lty = lty, pch = pch, title = "Country")
+legend("topleft", legend = country.names, col = col, lty = 2, pch = 20, title = "Country")
 for (i in seq(1, country.count)) {
   y <- countries.confirmed[[i]] - (countries.recovered[[i]] + countries.deaths[[i]])
-  lines(seq(1, d), y, type = "b", col = col[i], lty = lty[i], pch = pch[i], lw = 1)
+  lines(seq(1, d), y, type = "b", col = col[i], lty = 2, pch = 20, lw = 1)
 }
 
 min.y <- 0
