@@ -53,7 +53,7 @@ plot_time_series_for_country <- function(country.confirmed, country.deaths, coun
   a <- last.confirmed[1] - (day.count - 7) * slope
   abline(a = a, b = slope, col = "black", lw = 1.5, lty = 4)
   last.progression.pct <- round((100 * dy) / last.confirmed[1])
-  text(x = day.count + 4 - (trend.angle / 20), y = (0.4 - (trend.angle/3000)) * ylim[2], paste(dy, "cases/w.\nAvg:", dy %/% 7, "case/day\n", last.progression.pct, "% progress last week"), srt = trend.angle, col = "black")
+  text(x = day.count + 6 - (trend.angle / 20), y = (0.4 - (trend.angle/3000)) * ylim[2], paste(dy, "cases/w.\nAvg:", dy %/% 7, "case/day\n", last.progression.pct, "% progress last week"), srt = trend.angle, col = "black")
 
   # Show special measures against propagation.
   ypos = max(country.confirmed, na.rm = TRUE) %/% 3
@@ -207,7 +207,7 @@ plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerl
 
 ## Italy
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, italy.population, "Italy", NA, trend.angle = 70)
+plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, italy.population, "Italy", NA, trend.angle = 75)
 ```
 
 ## France
@@ -217,12 +217,12 @@ plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered,
 
 ## Germany
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, germany.population, "Germany", 48, NA, trend.angle = 65)
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, germany.population, "Germany", 48, NA, trend.angle = 70)
 ```
 
 ## Austria
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, austria.population, "Austria", 52, NA, trend.angle = 70)
+plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, austria.population, "Austria", 52, NA, trend.angle = 75)
 ```
 
 ## Spain
@@ -313,7 +313,7 @@ for (i in seq(1, country.count)) {
   max.y <- max(c(max.y, diff(tail(countries.confirmed[[i]]))), na.rm = TRUE)
 }
 xrange <- c(day.count-10, day.count+0.2)
-yrange <- c(0, max.y * 1.6)
+yrange <- c(0, max.y * 1.8)
 plot(xrange, yrange, main= "New Confirmed Cases per Day (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Cases per Day")
 
 grid()
