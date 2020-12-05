@@ -234,7 +234,7 @@ FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths
 13025,Brantley,Georgia,US,2020-05-01 02:32:28,31.19576557,-81.97743999,23,2,0,21,"Brantley, Georgia, US"
 54007,Braxton,West Virginia,US,2020-05-01 02:32:28,38.70036159,-80.72011184,2,0,0,2,"Braxton, West Virginia, US"
 48039,Brazoria,Texas,US,2020-05-01 02:32:28,29.18757369,-95.44563172,485,6,0,479,"Brazoria, Texas, US"
-48041,Brazos,Texas,US,2020-05-01 02:32:28,30.663644800000004,-96.30205577,193,16,0,177,"Brazos, Texas, US"
+48041,Brazos,Texas,US,2020-05-01 02:32:28,30.663644800000004,-96.30205577,197,16,0,177,"Brazos, Texas, US"
 21025,Breathitt,Kentucky,US,2020-05-01 02:32:28,37.52333168,-83.31959161,2,0,0,2,"Breathitt, Kentucky, US"
 21027,Breckinridge,Kentucky,US,2020-05-01 02:32:28,37.77377239,-86.42885017,9,0,0,9,"Breckinridge, Kentucky, US"
 19017,Bremer,Iowa,US,2020-05-01 02:32:28,42.77461496,-92.31795937,51,3,0,48,"Bremer, Iowa, US"
@@ -697,7 +697,7 @@ FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths
 8029,Delta,Colorado,US,2020-05-01 02:32:28,38.86246243,-107.86313419999999,44,1,0,43,"Delta, Colorado, US"
 26041,Delta,Michigan,US,2020-05-01 02:32:28,45.90484910000001,-86.9080745,13,2,0,11,"Delta, Michigan, US"
 48119,Delta,Texas,US,2020-05-01 02:32:28,33.38570922,-95.66921122,1,0,0,1,"Delta, Texas, US"
-48121,Denton,Texas,US,2020-05-01 02:32:28,33.20521901,-97.11691153,748,20,0,728,"Denton, Texas, US"
+48121,Denton,Texas,US,2020-05-01 02:32:28,33.20521901,-97.11691153,765,20,0,728,"Denton, Texas, US"
 8031,Denver,Colorado,US,2020-05-01 02:32:28,39.76018276,-104.87256950000001,3001,154,0,2847,"Denver, Colorado, US"
 19057,Des Moines,Iowa,US,2020-05-01 02:32:28,40.92012606,-91.18326592,16,1,0,15,"Des Moines, Iowa, US"
 41017,Deschutes,Oregon,US,2020-05-01 02:32:28,43.91570171,-121.2289121,76,0,0,76,"Deschutes, Oregon, US"
@@ -2962,6 +2962,7 @@ FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths
 ,,Northern Territory,Australia,2020-05-01 02:32:28,-12.4634,130.8456,28,0,25,3,"Northern Territory, Australia"
 ,,Northwest Territories,Canada,2020-05-01 02:32:28,64.8255,-124.8457,5,0,0,5,"Northwest Territories, Canada"
 ,,Nova Scotia,Canada,2020-05-01 02:32:28,44.681999999999995,-63.7443,947,28,0,919,"Nova Scotia, Canada"
+,,Nunavut,Canada,2020-05-01 02:32:28,70.2998,-83.1076,0,0,0,0,"Nunavut, Canada"
 ,,Ontario,Canada,2020-05-01 02:32:28,51.2538,-85.3232,17395,1205,0,16190,"Ontario, Canada"
 ,,Prince Edward Island,Canada,2020-05-01 02:32:28,46.5107,-63.4168,27,0,0,27,"Prince Edward Island, Canada"
 72,,Puerto Rico,US,2020-05-01 02:32:28,18.2208,-66.5901,1539,92,0,1447,"Puerto Rico, US"
@@ -2993,7 +2994,7 @@ FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths
 ,,Yukon,Canada,2020-05-01 02:32:28,64.2823,-135.0,11,0,0,11,"Yukon, Canada"
 ,,Yunnan,China,2020-05-01 02:32:28,24.974,101.48700000000001,185,2,181,2,"Yunnan, China"
 ,,Zhejiang,China,2020-05-01 02:32:28,29.1832,120.0934,1268,1,1264,3,"Zhejiang, China"
-,,,Afghanistan,2020-05-01 02:32:28,33.93911,67.709953,2171,64,260,1847,Afghanistan
+,,,Afghanistan,2020-05-01 02:32:28,33.93911,67.709953,2127,64,260,1847,Afghanistan
 ,,,Albania,2020-05-01 02:32:28,41.1533,20.1683,773,31,470,272,Albania
 ,,,Algeria,2020-05-01 02:32:28,28.0339,1.6596,4006,450,1779,1777,Algeria
 ,,,Andorra,2020-05-01 02:32:28,42.5063,1.5218,745,42,468,235,Andorra
@@ -3074,7 +3075,7 @@ FIPS,Admin2,Province_State,Country_Region,Last_Update,Lat,Long_,Confirmed,Deaths
 ,,,Iran,2020-05-01 02:32:28,32.427908,53.68804599999999,94640,6028,75103,13509,Iran
 ,,,Iraq,2020-05-01 02:32:28,33.223191,43.679291,2085,93,1375,617,Iraq
 ,,,Ireland,2020-05-01 02:32:28,53.1424,-7.6921,20612,1232,13386,5994,Ireland
-,,,Israel,2020-05-01 02:32:28,31.046051000000002,34.851612,15946,222,8561,7163,Israel
+,,,Israel,2020-05-01 02:32:28,31.046051000000002,34.851612,15896,225,8924,7163,Israel
 ,,,Italy,2020-05-01 02:32:28,41.87194,12.56738,205463,27967,75945,101551,Italy
 ,,,Jamaica,2020-05-01 02:32:28,18.1096,-77.2975,422,8,29,385,Jamaica
 ,,,Japan,2020-05-01 02:32:28,36.204824,138.252924,14088,430,2460,11198,Japan
