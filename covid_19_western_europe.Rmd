@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
-  html_document: 
-    number_sections: yes
-    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
+    number_sections: yes
+    toc: yes
+  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -369,7 +369,7 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.069 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
 }
 
-plot(xrange, yrange/7, main= "New Deaths per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day per 100K P.")
+plot(xrange, yrange/6, main= "New Deaths per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day per 100K P.")
 grid()
 legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 for (i in seq(1, country.count)) {
