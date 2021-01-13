@@ -1,12 +1,12 @@
 ---
 title: "COVID-19 in Switzerland and Western Europe"
 output:
+  html_document: 
+    number_sections: yes
+    toc: yes
   html_notebook: 
     fig_height: 5
     fig_width: 7
-    number_sections: yes
-    toc: yes
-  html_document: 
     number_sections: yes
     toc: yes
   word_document: 
@@ -207,12 +207,12 @@ IMPORTANT NOTE: The graphics below show values provided by official sources betw
 
 ## Switzerland
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, switzerland.population, "Switzerland", 55, NA, trend.angle = 55)
+plot_time_series_for_country(switzerland.confirmed, switzerland.deaths, switzerland.recovered, switzerland.population, "Switzerland", 55, NA, trend.angle = 40)
 ```
 
 ## Italy
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, italy.population, "Italy", NA, trend.angle = 60)
+plot_time_series_for_country(italy.confirmed, italy.deaths, italy.recovered, italy.population, "Italy", NA, trend.angle = 45)
 ```
 
 ## France
@@ -222,27 +222,27 @@ plot_time_series_for_country(france.confirmed, germany.deaths, france.recovered,
 
 ## Germany
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, germany.population, "Germany", 48, NA, trend.angle = 60)
+plot_time_series_for_country(germany.confirmed, switzerland.deaths, germany.recovered, germany.population, "Germany", 48, NA, trend.angle = 55)
 ```
 
 ## Austria
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, austria.population, "Austria", 52, NA, trend.angle = 55)
+plot_time_series_for_country(austria.confirmed, austria.deaths, austria.recovered, austria.population, "Austria", 52, NA, trend.angle = 30)
 ```
 
 ## Spain
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, spain.population, "Spain", NA, 53, trend.angle = 35)
+plot_time_series_for_country(spain.confirmed, spain.deaths, spain.recovered, spain.population, "Spain", NA, 53, trend.angle = 50)
 ```
 
 ## Great Britain
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, uk.population, "Great Britain", NA, NA, trend.angle = 45)
+plot_time_series_for_country(uk.confirmed, uk.deaths, uk.recovered, uk.population, "Great Britain", NA, NA, trend.angle = 60)
 ```
 
 ## Denmark
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, denmark.population, "Denmark", NA, NA, trend.angle = 65)
+plot_time_series_for_country(denmark.confirmed, denmark.deaths, denmark.recovered, denmark.population, "Denmark", NA, NA, trend.angle = 40)
 ```
 
 ## Norway
@@ -257,7 +257,7 @@ plot_time_series_for_country(sweden.confirmed, sweden.deaths, sweden.recovered, 
 
 ## Finland
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(finland.confirmed, finland.deaths, finland.recovered, finland.population, "Finland", NA, NA, trend.angle = 65)
+plot_time_series_for_country(finland.confirmed, finland.deaths, finland.recovered, finland.population, "Finland", NA, NA, trend.angle = 40)
 ```
 
 ## Iceland
@@ -267,7 +267,7 @@ plot_time_series_for_country(iceland.confirmed, iceland.deaths, iceland.recovere
 
 ## Belgium
 ```{r, echo=FALSE, warning=FALSE}
-plot_time_series_for_country(belgium.confirmed, belgium.deaths, belgium.recovered, belgium.population, "Belgium", 55, NA, trend.angle = 30)
+plot_time_series_for_country(belgium.confirmed, belgium.deaths, belgium.recovered, belgium.population, "Belgium", 55, NA, trend.angle = 20)
 ```
 
 # What Happened in Hubei Province (China)
@@ -299,7 +299,7 @@ usa.confirmed <- get_sum_of_timeseries_as_vector_for_usa(usa.confirmed, c(1:11))
 usa.deaths <- get_sum_of_timeseries_as_vector_for_usa(usa.deaths, c(1:12))
 
 usa.population <- 330052960
-plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=60)
+plot_time_series_for_country(usa.confirmed, usa.deaths, country.recovered = NULL, usa.population, "USA", NA, NA, trend.angle=50)
 ```
 
 # Comparison of Number of Confirmed Cases in Western Europe
@@ -369,11 +369,11 @@ for (i in seq(1, country.count)) {
   lines(seq(2, day.count) - 0.45 + 0.069 * i, diff(countries.deaths[[i]]), type = "h", col = col[i], lty = 1, lw = 3)
 }
 
-plot(xrange, yrange/6, main= "New Deaths per Day per 100K Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day per 100K P.")
+plot(xrange, yrange/50, main= "New Deaths per Day per 1 Mio Persons (last 10 days)", type = "n", xlab = "Days Since 2020-01-21", ylab = "Number of New Deaths per Day per 1 Mio P.")
 grid()
 legend("topleft", legend = country.names, col = col, lty = 1, lw = 4, title = "Country", ncol = 4, cex = 0.9)
 for (i in seq(1, country.count)) {
-  lines(seq(2, day.count) - 0.45 + 0.069 * i, diff(countries.confirmed[[i]])/(countries.population[[i]][1]/100000), type = "h", col = col[i], lty = 1, lw = 3)
+  lines(seq(2, day.count) - 0.45 + 0.069 * i, diff(countries.deaths[[i]])/(countries.population[[i]][1]/1000000), type = "h", col = col[i], lty = 1, lw = 3)
 }
 ```
 
